@@ -67,9 +67,6 @@ function start()
  
     ship:init()
 
-    local scale = math.random()
-    ship:setScale( scale )
-    -- Star.setScale( scale )
 end
 
 function processTap(event)
@@ -77,7 +74,7 @@ function processTap(event)
         print("Tapped: ", event.x, ", ", event.y)
         local soi = display.newCircle(event.x, event.y, 30)
         timer.performWithDelay( 50, function () soi:removeSelf() end )
-        physics.addBody( soi, "dynamic")
+        physics.addBody( soi, "dynamic", { filter = { maskBits = 4, categoryBits = 1 } } )
         soi:addEventListener( "collision", tapCollision )
     end
 end

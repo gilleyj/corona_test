@@ -1,6 +1,8 @@
 local proxy = require "proxy"
 local physics = require "physics"
 
+local part_tiles = {}
+
 -- declare my ship object
 local ship = proxy.get ( display.newContainer( 300, 300 ) )
 
@@ -20,7 +22,6 @@ function ship:init()
     local origin_y = origin_x
 
     -- my list of tiles
-    local part_tiles = {}
 
     -- dont know
     local part
@@ -46,19 +47,27 @@ function ship:init()
 	    	if part_tiles[index] then
 				part_tiles[index].x = origin_x + ( ( x - 1 ) * part_scale ) + ( part_tiles[index].width / 2 )
     			part_tiles[index].y = origin_y + ( ( y - 1 ) * part_scale ) + ( part_tiles[index].height / 2 )
+    			physics.addBody( part_tiles[index], "kinematic" )
+    			part_tiles[index].isFixedRotation =  false
     			self:insert( part_tiles[index], false )
     		end
 	    end
     end
 
    
-	self.x = math.random( display.contentWidth )
-	self.y = self.contentHeight
+	self.x = display.contentCenterX 
+	self.y = display.contentCenterY
+
+	--self.x = math.random( display.contentWidth )
+	--self.y = self.contentHeight
 	self.targetRotation = 300
 
-	self:scale(0.5,0.5)
+	physics.addBody( self, "dynamic" )
 
-	physics.addBody( self, "kinematic" )
+	-- self:applyLinearImpulse( 60, 20, self.x, self.y )
+	-- self:scale(0.5,0.5)
+	-- self.anchorChildren = false
+	-- physics.addBody( self, "static", { filter = { maskBits = 0, categoryBits = 2 } } )
 	Runtime:addEventListener( "enterFrame", ship )
 
 end
@@ -104,14 +113,24 @@ function buildShip()
 
 	design[8] = {}
 	design[8][4] = 2
+	design[8][5] = 9
 	design[8][6] = 1
 	design[8][7] = 2
+	design[8][8] = 9
 
 	design[9] = {}
+	design[9][4] = 9
+	design[9][5] = 9
 	design[9][6] = 1
+	design[9][7] = 9
+	design[9][8] = 9
 
 	design[10] = {}
+	design[10][4] = 9
+	design[10][5] = 9
 	design[10][6] = 1
+	design[10][7] = 9
+	design[10][8] = 9
 
 	design[1] = {}
 	design[1][1] = 3
@@ -132,7 +151,7 @@ end
 
 function ship:enterFrame( event )
 
-   self:translate( 0, 1 )    -- move ship 1pt down on every frame
+   -- self:translate( 0, 1 )    -- move ship 1pt down on every frame
 
    -- move ship above top of screen when it goes below the screen
 	if self.y > display.contentHeight then
