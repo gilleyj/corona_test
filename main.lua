@@ -24,13 +24,13 @@ local initGUI, initStars, toggleDebug, start, processTap, tapCollision
 
 local stars = {}
 
-local NUM_STARS = 400
+local NUM_STARS = 500
 
 function initStars()
     local starGroup = display.newGroup( )
     for i=1, NUM_STARS do
         stars[i] = Star:new()
-        stars[i]:init()
+        stars[i]:init({x = math.random(0, display.contentWidth), y = math.random(0, display.contentHeight), size = 5 + math.random(3)})
     end
     print( "Generated " .. #stars .. " stars" )
 end
@@ -41,19 +41,19 @@ function initGUI()
         left = 20,
         label = "D",
         labelAlign = "center",
-        labelColor = { default = { 0.62, 0.07, 0.04 }},
+        labelColor = { default = { 0, 0.6, 0 } }, --{ default = { 0.62, 0.07, 0.04 }},
         labelXOffset = 8,
         labelYOffset = -7,
         font = "Erbos Draco 1st Open NBP",
         fontSize = 40,
         onEvent = toggleDebug,
-        emboss = true,
+        emboss = false,
         shape = "roundedRect",
         width = 50,
         height = 50,
         cornerRadius = 5,
         fillColor = {
-            default = { 0.6, 0.6, 0.6 },
+            default = { 0.6, 0.6, 0.6, 0.5 },
             over = { 0.4, 0.4, 0.4 },
         },
     } )
@@ -65,24 +65,11 @@ function start()
     initGUI()
     hilite:init()
  
-    ship:init()
+    -- ship:init()
 
-end
-
-function processTap(event)
-    if event.phase == "ended" then
-        print("Tapped: ", event.x, ", ", event.y)
-        local soi = display.newCircle(event.x, event.y, 30)
-        timer.performWithDelay( 50, function () soi:removeSelf() end )
-        physics.addBody( soi, "dynamic", { filter = { maskBits = 4, categoryBits = 1 } } )
-        soi:addEventListener( "collision", tapCollision )
-    end
-end
-
-function tapCollision(collision) 
-    -- print("Collision from: ", collision.target.x, collision.target.y)
-    -- print("Collision with: ", collision.other.x, collision.other.y)
-    hilite:highlight(collision.other, collision.target.x, collision.target.y)
+    -- local scale = math.random()
+    -- ship:setScale( scale )
+    -- Star.setScale( scale )
 end
 
 local isDebug = false
@@ -104,9 +91,6 @@ local function main()
     --local font = "HelveticaNeue-Light"
     local helloWordText = display.newText( "hello", display.contentWidth / 2, display.contentHeight / 2 - 25, font, 60)
     timer.performWithDelay( 1000, function() display.remove( helloWordText ); start() end )
-
-    Runtime:addEventListener( "touch", processTap )
-
 end
 
 main()
